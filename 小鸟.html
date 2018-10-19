@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            overflow: hidden;
+        }
+
+        #dbird {
+            position: absolute;
+        }
+
+        .dir_37 {
+            transform: rotateY(180deg);
+        }
+
+        .dir_38 {
+            transform: rotate(-60deg);
+        }
+
+        .dir_40 {
+            transform: rotate(60deg);
+        }
+    </style>
+    <script src="js/jquery.js"></script>
+</head>
+
+<body>
+    <div id="dbird">
+        <img src="bird2.gif" alt="">
+    </div>
+</body>
+<script>
+    $(function () {
+        var bird = $('#dbird');
+        var pos = bird.offset(); //获取小鸟的位置top,left
+        // var liuWidth=document.documentElement.clientWidth;
+        // var width=$(document).width();
+        // 这两句话都是获取浏览器的宽度
+        var keyrecord = 39;
+        var birdSize = {
+            width: bird.width(),
+            height: bird.height()
+        }; //获取小鸟的大小          
+        var speed = 10; //设置小鸟移动的速度
+        $(document).keydown(function (even) {
+            var key = even.keyCode;
+            if (key != keyrecord) {
+                bird.removeClass().addClass('dir_' + key);
+            }
+            keyrecord = key;
+            switch (key) {
+                case 37: //左
+                    pos.left -= speed;
+                    if (pos.left <= -birdSize.width) {
+
+                        pos.left = $(window).width();
+                    }
+                    break;
+                case 38: //上
+                    pos.top -= speed;
+                    if (pos.top <= -birdSize.height) {
+                        pos.top = $(window).height();
+                    }
+                    break;
+                case 39: //右
+                    pos.left += speed;
+                    if (pos.left >= $(window).width()) {
+                        pos.left = -birdSize.width;
+                    }
+                    break;
+                case 40: //下
+                    pos.top += speed;
+                    if (pos.top >= $(window).height()) {
+                        pos.top = -birdSize.height;
+                    }
+                    break;
+            }
+            bird.offset(pos);
+        });
+    });
+</script>
+
+</html>

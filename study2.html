@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+        *{
+            padding:0;
+            margin:0;
+        }
+        .sec-slide .slide-box{
+    position: relative;
+    margin: 0 auto;
+    width: 1130px;
+    
+    height: 400px;
+    /*outline: 1px solid red;*/
+    margin-top: 50px;
+}
+.sec-slide .slide-box .slide-btn{
+    width: 24px;
+    height: 100%;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-size: 24px;
+    background-position: center;
+}
+.sec-slide .slide-box .prev-btn{
+    background-image: url('../image/read/left-btn.jpg');
+}
+.sec-slide .slide-box .next-btn{
+    background-image: url('../image/read/right-btn.jpg');
+}
+.sec-slide .slide-box .slide-info{
+    position: relative;
+    width: 960px;
+    height: 100%;
+    float: left;
+    margin-left: 59px;
+    overflow: hidden;
+}
+.slide-box .slide-info .slide-info-list li{
+    position: absolute;
+    top:0;
+    left: 0;
+    transition: all 0.3s ease-out;
+}
+.slide-box .slide-info .slide-info-list li img{
+    width: 640px;
+    height: 375px;
+    border:none;
+    float: left;
+}
+.p6{
+    transform:translate3d(320px,0,0) scale(0.8);
+    transform-origin:100% 50%;
+    z-index: 7;
+}
+.p5{
+    transform:translate3d(450px,0,0) scale(0.8);
+    z-index: 5;
+}
+.p4{
+    transform:translate3d(-300px,0,0) scale(0.8);
+    z-index: 3;
+}
+.p3{
+    transform:translate3d(-150px,0,0) scale(0.8);
+    z-index: 5;
+}
+.p2{
+    transform:translate3d(0px,0,0) scale(0.8);
+    transform-origin:0 50%;
+    z-index: 7;
+}
+.p1{
+    border-right: 10px solid #fafafa;
+    border-left: 10px solid #fafafa;
+    transform:translate3d(150px,0,0) scale(1);
+    z-index: 9;
+    opacity: 1;
+}
+.slide-page{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 250px;
+    height: 20px;
+    text-align: center;
+}
+.slide-page a{
+    display: inline-block;
+    width: 35px;
+    height: 5px;
+    padding-top: 4px;
+    cursor: pointer;
+}
+.slide-page span{
+    display: block;
+    width: 35px;
+    height: 1px;
+    background: red;
+}
+.slide-page .blue{
+    background: blue;
+}
+    </style>
+</head>
+<body>
+        <div class="slide-box clearfix">
+                <div class="slide-btn prev-btn left"></div>
+                <div class="slide-info">
+                   <ul class="slide-info-list">
+                      <li class="p1"><a href="#"><img src="images/1.jpg" alt=""/></a></li>
+                      <li class="p2"><a href="#"><img src="images/2.jpg" alt=""/></a></li>
+                      <li class="p3"><a href="#"><img src="images/3.jpg" alt=""/></a></li>
+                      <li class="p4"><a href="#"><img src="images/hao.jpg" alt=""/></a></li>
+                      <li class="p5"><a href="#"><img src="images/le.jpg" alt=""/></a></li>
+                      <li class="p6"><a href="#"><img src="images/ma.jpg" alt=""/></a></li>
+                   </ul>
+                </div>
+                <div class="slide-btn next-btn right"></div>
+                <div class="slide-page">
+                   <a href="javascript:"><span class="blue"></span></a>
+                   <a href="javascript:"><span></span></a>
+                   <a href="javascript:"><span></span></a>
+                   <a href="javascript:"><span></span></a>
+                   <a href="javascript:"><span></span></a>
+                   <a href="javascript:"><span></span></a>
+                 </div>
+             </div>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript">
+$(function(){
+    /**********************************旋转木马轮播图***************************************/
+    var cArr=["p1","p2","p3","p4","p5","p6"];//定义一个轮播class的数组
+    var index=0;
+
+    $("body").on("click",".next-btn",function(){
+        nextImg();
+    });
+
+    $("body").on("click",".prev-btn",function(){
+        prevImg();
+    });
+    //定义一个上一张的方法
+    function prevImg(){
+        cArr.unshift(cArr[5]);
+        cArr.pop();
+        //i是元素的索引，从0开始
+        //e为当前处理的元素
+        //each循环，当前处理的元素移除所有的class，然后添加数组索引i的class
+        $(".slide-info-list li").each(function(i,e){
+            $(e).removeClass().addClass(cArr[i]);
+        });
+        index--;
+        if (index<0) {
+            index=5;
+        }
+        show();
+    }
+
+    //定义一个下一张的方法
+    function nextImg(){
+        cArr.push(cArr[0]);
+        cArr.shift();
+        $(".slide-info-list li").each(function(i,e){
+            $(e).removeClass().addClass(cArr[i]);
+        });
+        index++;
+        if (index>5) {
+            index=0;
+        }
+        show();
+    }
+
+
+    //通过底下按钮点击切换
+    $(".slide-page a").each(function(){
+        $(this).click(function(){
+            var myIndex=$(this).index();
+            var b=myIndex-index;
+            if(b==0){
+                return;
+            }
+            else if(b>0) {
+                /*
+                 * splice(0,b)的意思是从索引0开始,取出数量为b的数组
+                 * 因为每次点击之后数组都被改变了,所以当前显示的这个照片的索引才是0
+                 * 所以取出从索引0到b的数组,就是从原本的这个照片到需要点击的照片的数组
+                 * 这时候原本的数组也将这部分数组进行移除了
+                 * 再把移除的数组添加的原本的数组的后面
+                 */
+                var newArr=cArr.splice(0,b);
+                cArr=$.merge(cArr,newArr);
+                $(".slide-info-list li").each(function(i,e){
+                    $(e).removeClass().addClass(cArr[i]);
+                });
+                index=myIndex;
+                show();
+            }
+            else if(b<0){
+                /*
+                 * 因为b<0,所以取数组的时候是倒序来取的,也就是说我们可以先把数组的顺序颠倒一下
+                 * 而b现在是负值,所以取出索引0到-b即为需要取出的数组
+                 * 也就是从原本的照片到需要点击的照片的数组
+                 * 然后将原本的数组跟取出的数组进行拼接
+                 * 再次倒序,使原本的倒序变为正序
+                 */
+                cArr.reverse();
+                var oldArr=cArr.splice(0,-b);
+                cArr=$.merge(cArr,oldArr);
+                cArr.reverse();
+                $(".slide-info-list li").each(function(i,e){
+                    $(e).removeClass().addClass(cArr[i]);
+                });
+                index=myIndex;
+                show();
+            }
+        })
+    });
+
+    //改变底下按钮的背景色
+    function show(){
+        $(".slide-page span").eq(index).addClass("blue").parent().siblings().children().removeClass("blue");
+    }
+
+    //点击class为p2的元素触发上一张照片的函数
+    $("body").on("click",".p2",function(){
+        prevImg();
+        return false;//返回一个false值，让a标签不跳转
+    });
+
+    //点击class为p6的元素触发下一张照片的函数
+    $("body").on("click",".p6",function(){
+        nextImg();
+        return false;
+    });
+});
+    </script>
+</body>
+</html>
